@@ -34,19 +34,23 @@ then
 
     run-tests || report-error "Warning" "Test script completed successfully"
 else
-    echo No tests for $project submissions... >$LOG_FILE
+    echo No tests for $project submissions... >$LOG_FILE    
 fi
-
-gen-readme
 
 echo Log file
 echo -------------------------
 cat $LOG_FILE
 
+if [ ! -r $TEST_RESULT_FILE ]; then
+  exit 1
+fi
+
 echo Test results
 echo -------------------------
 cat $TEST_RESULT_FILE
 echo -------------------------
+
+gen-readme
 
 echo Overall Result: $(cat $SUBMISSION_DIR/submission.status)
 

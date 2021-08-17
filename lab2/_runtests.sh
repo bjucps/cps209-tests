@@ -1,7 +1,5 @@
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-TIMEOUT=0 # Gradle is incompatible with timeout?
-
 require-files report.md
 
 cat >> $BASEDIR/gradle_project_template/build.gradle <<EOF
@@ -21,11 +19,13 @@ cd $BASEDIR/gradle_project_template
 
 do-compile "gradle jar"
 
-echo "Executing your tests..."
+echo -e "\nExecuting your tests..."
 run-program --test-category "Unit Tests" --test-message "Your tests run without error" gradle test
 
 rm src/GuessTest.java
 cp $TEST_DIR/MyGuessTest.java src
 
-echo "Executing official tests..."
+echo -e "\nExecuting official tests..."
 run-program --test-category "Unit Tests" --test-message "Official tests run without error" gradle test
+
+echo -e "\nAll tests complete."

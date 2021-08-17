@@ -40,3 +40,5 @@ run-program --test-category "Grader" --test-message "Correctness Test" \
 38
 33
 EOF
+
+echo "All tests complete."
