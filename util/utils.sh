@@ -5,7 +5,7 @@ export LOG_FILE=$BASEDIR/_log.txt
 export TEST_BASE_DIR=$BASEDIR/tests
 #export TEST_DIR=   # Must be set by script
 #export SUBMISSION_DIR=   # Must be set by script
-export TIMEOUT=10  # default timeout in seconds
+export TIMEOUT=60  # default timeout in seconds
 export PASS_IMG=https://raw.githubusercontent.com/bjucps/cps209-tests/main/images/pass.png
 export FAIL_IMG=https://raw.githubusercontent.com/bjucps/cps209-tests/main/images/fail.png
 
@@ -67,12 +67,11 @@ function run-tests {
     fi
 
     if [ $TIMEOUT -gt 0 ]; then
-        timeout_cmd=timeout --verbose -k 1  $TIMEOUT
+        timeout_cmd="timeout --verbose -k 1  $TIMEOUT"
         echo "Beginning test run with timeout $TIMEOUT"
     else
         echo "Beginning test run"
     fi
-
     
     set -o pipefail
     result=0
@@ -240,7 +239,7 @@ function do-compile {
 function run-program {
     local testcategory="Warning" 
     local testmessage
-    local timeout=30              # Default timeout
+    local timeout=0              # Default timeout (0 - none)
     local showoutputonpass=0 
     local maxlines=50
     local result
@@ -279,9 +278,10 @@ function run-program {
 
     let head_count=maxlines+1
     if [ $timeout -gt 0 ]; then
-        timeout_cmd=timeout --verbose $timeout
+        timeout_cmd="timeout --verbose $timeout"
     fi
 
+    echo -en "\nExecuting: $* ... "
     result=$FAIL
     if output=$(set -o pipefail; $timeout_cmd $* 2>&1 | head -$head_count > __output_orig.log); then
         result=OK
@@ -294,7 +294,7 @@ function run-program {
         echo "... additional lines have been omitted ..." >> __output.log
     fi
 
-    echo -e "\nExecuting: $* ... $result"
+    echo "$result"
     if [ $result = OK -a -n "$diff_cmd" ]; then
         if $diff_cmd &>/dev/null; then
           echo "*** Correct Result Detected***" >> __output.log

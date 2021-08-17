@@ -19,9 +19,9 @@ mv GuessTest.java $BASEDIR/gradle_project_template/src
 cd $BASEDIR/gradle_project_template
 do-compile "gradle -d jar"
 
-run-program --test-category "Unit Tests" --test-message "Your tests run without error" --timeout 0 gradle test
+run-program --test-category "Unit Tests" --test-message "Your tests run without error" gradle test
 
 rm src/GuessTest.java
 cp $TEST_DIR/MyGuessTest.java src
 
-run-program --test-category "Unit Tests" --test-message "My tests run without error" --timeout 0 gradle test
+run-program --test-category "Unit Tests" --test-message "My tests run without error" gradle test
