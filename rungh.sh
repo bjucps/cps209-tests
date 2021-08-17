@@ -38,7 +38,7 @@ then
       mv $TEST_BASE_DIR/gradle_project_template $BASEDIR/gradle_project_template && rm $BASEDIR/gradle_project_template/src/*
 
       # Download gradle dependency cache
-      if curl https://github.com/bjucps/cps209-tests/releases/download/tests/files.tar.gz --output files.tar.gz --silent --location
+      if curl https://github.com/bjucps/cps209-tests/releases/download/tests/files.tar.gz --output files.tar.gz --silent --location --fail
       then
         tar zxf files.tar.gz --directory $BASEDIR
         export GRADLE_USER_HOME=$BASEDIR/.gradle
