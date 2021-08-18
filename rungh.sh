@@ -30,7 +30,7 @@ export TEST_DIR=$TEST_BASE_DIR/$PROJECT
 
 [ -r $TEST_DIR/_config.sh ] && . $TEST_DIR/_config.sh
 
-if [ -e $TEST_DIR/_runtests.sh ]
+if [ -e $TEST_DIR/_$PROJECT.sh ]
 then
     if [ -z "$NO_GRADLE" ]; then
       # Download gradle dependency cache
