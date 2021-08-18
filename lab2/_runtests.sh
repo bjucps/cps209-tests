@@ -1,6 +1,11 @@
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-require-files report.md
+if [ ! -d src ]; then
+    report-error "Must Pass" "src directory uploaded"
+    exit 0
+fi
+
+require-files src/report.md
 
 cat >> $BASEDIR/gradle_project_template/build.gradle <<EOF
 // Fail unit tests that do not complete within specified duration
@@ -12,9 +17,7 @@ test {
 }
 EOF
 
-mv Guess.java $BASEDIR/gradle_project_template/src
-mv GuessTest.java $BASEDIR/gradle_project_template/src
-
+mv src/* $BASEDIR/gradle_project_template/src
 cd $BASEDIR/gradle_project_template
 
 do-compile "gradle jar"

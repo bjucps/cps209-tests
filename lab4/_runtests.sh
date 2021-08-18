@@ -1,3 +1,5 @@
+[ -d src ] || report-error "Must Pass" "src directory uploaded"
+
 cp -r $SUBMISSION_DIR/src/* $BASEDIR/javafx_project_template/src
 cd $BASEDIR/javafx_project_template
 
