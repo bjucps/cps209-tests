@@ -1,10 +1,6 @@
-[ -d src ] || report-error "Must Pass" "src directory uploaded"
+require-files src/report.md
 
-cp -r $SUBMISSION_DIR/src/* $BASEDIR/javafx_project_template/src
-cd $BASEDIR/javafx_project_template
-
-require-files report.md
-do-compile "gradle jar"
+check-javafx-submission
 
 echo -e "\nAll tests complete."
 

@@ -1,9 +1,8 @@
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-if [ ! -d src ]; then
-    report-error "Must Pass" "src directory uploaded"
-    exit 0
-fi
+[ -d src ] || report-error "Must Pass" "src directory uploaded"
+
+exit-if-must-pass-tests-failed
 
 require-files src/report.md
 

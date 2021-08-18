@@ -31,7 +31,7 @@ function must-pass-tests-failed {
 }
 
 function exit-if-must-pass-tests-failed {
-    must-pass-tests-failed && exit 1
+    must-pass-tests-failed && exit 0
 }
 
 # Detect project name
@@ -328,4 +328,19 @@ function run-program {
     fi
 
     [ $result = $PASS ]
+}
+
+function check-javafx-submission {
+    echo -n "Checking for src folder... "
+    if [ ! -d src ]; then 
+        echo $FAIL
+        report-error "Must Pass" "src directory uploaded"
+        exit 0
+    fi
+    echo $PASS
+
+    cp -r $SUBMISSION_DIR/src/* $BASEDIR/javafx_project_template/src
+    cd $BASEDIR/javafx_project_template
+
+    do-compile "gradle jar"
 }
