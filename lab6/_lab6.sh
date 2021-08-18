@@ -1,8 +1,6 @@
 require-src-folder
 require-files src/report.md
 
-exit-if-must-pass-tests-failed
-
 copy-gradle-buildfiles
 
 cat >> build.gradle <<EOF
@@ -15,6 +13,4 @@ test {
 }
 EOF
 
-do-compile "gradle jar"
-
-echo -e "\nAll tests complete."
+do-compile gradle jar

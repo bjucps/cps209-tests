@@ -181,7 +181,7 @@ function require-pdf {
 # Compiles a program and reports success or failure
 # Usage: do-compile <compile command> [ <expected executable> ]
 # Example:
-#     do-compile [ --always-show-output ] [ --test-message <msg> ] "gcc -g myproc.c -omyprog" "myprog" 
+#     do-compile [ --always-show-output ] [ --test-message <msg> ] [ --expect-exe <filename> ] "gcc -g myproc.c -omyprog" "myprog" 
 function do-compile {
     local result=$FAIL
     local detail
@@ -189,22 +189,27 @@ function do-compile {
     local compile_cmd
     local expected_exe
     local testmessage="Successful compile"
+    local opt_check=1
     
-    if [ "$1" = "--always-show-output" ]; then
-        always_show=1
-        shift
-    fi
-    if [ "$1" = "--test-message" ]; then
-        testmessage=$2
-        shift 2
-    fi
+    while [ $opt_check -eq 1 ]; do
 
-    compile_cmd=$1
-    expected_exe=$2
+        if [ "$1" = "--always-show-output" ]; then
+            always_show=1
+            shift
+        elif [ "$1" = "--test-message" ]; then
+            testmessage=$2
+            shift 2
+        elif [ "$1" = "--expect-exe" ]; then
+            expected_exe=$2
+            shift 2
+        else
+            opt_check=0
+        fi
+    done
 
-    echo -en "\nCompiling: $compile_cmd... "
+    echo -en "\nCompiling: $* ... "
 
-    if detail=$($compile_cmd 2>&1); then
+    if detail=$($* 2>&1); then
         result=$PASS
         if [ -n "$expected_exe" -a ! -e "$expected_exe" ]; then
             result=$FAIL

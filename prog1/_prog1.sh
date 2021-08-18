@@ -1,7 +1,7 @@
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 require-src-folder
-require-files src/report.md
+require-files src/report.pdf
 
 copy-gradle-buildfiles
 
@@ -15,12 +15,21 @@ test {
 }
 EOF
 
-do-compile gradle jar || exit
+do-compile gradle install || exit 
 
 echo -e "\nExecuting your tests..."
 run-program --test-category "Unit Tests" --test-message "Your tests run without error" gradle test
 
-cp $TEST_DIR/Lab8Test.java src
+run-program --test-category "Command Line Tests" --test-message "Test 1 Doesn't Crash" \
+    --timeout 3 build/install/app/bin/app --shields 7 --warp 5.2 --cloak --crew kirk,uhura,mccoy 
+
+run-program --test-category "Command Line Tests" --test-message "Test 2 Doesn't Crash" \
+    --timeout 3 build/install/app/bin/app --foo --crew kirk,uhura,mccoy
+
+rm src/*Test.java
+cp $TEST_DIR/OfficialStarshipTest.java src
 
 echo -e "\nExecuting official tests..."
+do-compile --test-message "Compiles with Official Test" gradle clean jar || exit
 run-program --test-category "Unit Tests" --test-message "Official tests run without error" gradle test
+
