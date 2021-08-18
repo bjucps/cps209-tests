@@ -34,7 +34,11 @@ export TEST_DIR=$TEST_BASE_DIR/$PROJECT
 [ -r $TEST_DIR/_config.sh ] && . $TEST_DIR/_config.sh
 
 # If user submitted a file named _debug, turn on DEBUG
-[ -r _debug ] && export DEBUG=1
+if [ -r _debug ]
+then
+  export DEBUG=1
+  set -x
+fi
 
 if [ -e $TEST_DIR/_$PROJECT.sh ]
 then

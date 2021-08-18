@@ -72,17 +72,14 @@ function run-tests {
         #echo "Beginning test run with overall time limit $TIMEOUT seconds..."
     fi
     
-    set -o pipefail
     result=0
-    if BASH_ENV=$TEST_BASE_DIR/util/utils.sh $timeout_cmd bash $BASH_DEBUG_OPT $TEST_DIR/_$PROJECT.sh  2>&1 
+    if ! BASH_ENV=$TEST_BASE_DIR/util/utils.sh $timeout_cmd bash $BASH_DEBUG_OPT $TEST_DIR/_$PROJECT.sh  2>&1 
     then
-        echo "Test run completed."
-    else
         if [ ${PIPESTATUS[0]} -eq 124 ]; then
-          echo "Time limit of $TIMEOUT seconds exceeded. Test aborted."
+          echo -e "\n\n** WARNING: Time limit of $TIMEOUT seconds exceeded. All tests aborted."
           report-error "$CAT_MUST_PASS" "Complete all tests within $TIMEOUT seconds"
-        else
-          report-error "$CAT_MUST_PASS" "Complete basic tests successfully"
+        # else
+        #   report-error "$CAT_MUST_PASS" "Complete basic tests successfully"
         fi
         result=1
     fi
