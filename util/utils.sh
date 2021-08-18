@@ -5,6 +5,7 @@ export LOG_FILE=$BASEDIR/_log.txt
 export TEST_BASE_DIR=$BASEDIR/tests
 #export TEST_DIR=   # Must be set by script
 #export SUBMISSION_DIR=   # Must be set by script
+#export PROJECT  # set by rungh.sh
 export TIMEOUT=60  # default timeout in seconds
 export PASS_IMG=https://raw.githubusercontent.com/bjucps/cps209-tests/main/images/pass.png
 export FAIL_IMG=https://raw.githubusercontent.com/bjucps/cps209-tests/main/images/fail.png
@@ -68,14 +69,12 @@ function run-tests {
 
     if [ $TIMEOUT -gt 0 ]; then
         timeout_cmd="timeout --verbose -k 1  $TIMEOUT"
-        echo "Beginning test run with timeout $TIMEOUT"
-    else
-        echo "Beginning test run"
+        #echo "Beginning test run with overall time limit $TIMEOUT seconds..."
     fi
     
     set -o pipefail
     result=0
-    if BASH_ENV=$TEST_BASE_DIR/util/utils.sh $timeout_cmd bash $BASH_DEBUG_OPT _runtests.sh  2>&1 | tee $LOG_FILE
+    if BASH_ENV=$TEST_BASE_DIR/util/utils.sh $timeout_cmd bash $BASH_DEBUG_OPT $TEST_DIR/_$PROJECT.sh  2>&1 
     then
         echo "Test run completed."
     else
@@ -330,17 +329,34 @@ function run-program {
     [ $result = $PASS ]
 }
 
-function check-javafx-submission {
-    echo -n "Checking for src folder... "
+function copy-javafx-buildfiles {
+    if [ -e build.gradle ]; then
+        echo -e "\n** build.gradle detected. Using your build script."
+    else
+        cp $TEST_BASE_DIR/javafx_project_template/*.gradle .
+    fi
+}
+
+function copy-gradle-buildfiles {
+    if [ -e build.gradle ]; then
+        echo -e "\n** build.gradle detected. Using your build script."
+    else
+        cp $TEST_BASE_DIR/gradle_project_template/*.gradle .
+    fi
+}
+
+function require-src-folder {
+    echo -en "\nChecking for src folder... "
     if [ ! -d src ]; then 
         echo $FAIL
         report-error "Must Pass" "src directory uploaded"
         exit 0
     fi
     echo $PASS
+}
 
-    cp -r $SUBMISSION_DIR/src/* $BASEDIR/javafx_project_template/src
-    cd $BASEDIR/javafx_project_template
-
+function check-javafx-submission {
+    require-src-folder
+    copy-javafx-buildfiles
     do-compile "gradle jar"
 }

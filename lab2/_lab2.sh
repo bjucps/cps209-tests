@@ -1,12 +1,13 @@
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-[ -d src ] || report-error "Must Pass" "src directory uploaded"
+require-src-folder
+require-files src/report.md
 
 exit-if-must-pass-tests-failed
 
-require-files src/report.md
+copy-gradle-buildfiles
 
-cat >> $BASEDIR/gradle_project_template/build.gradle <<EOF
+cat >> build.gradle <<EOF
 // Fail unit tests that do not complete within specified duration
 test {
     timeout = Duration.ofMillis(6000)
@@ -16,10 +17,9 @@ test {
 }
 EOF
 
-mv src/* $BASEDIR/gradle_project_template/src
-cd $BASEDIR/gradle_project_template
-
 do-compile "gradle jar"
+
+exit-if-must-pass-tests-failed
 
 echo -e "\nExecuting your tests..."
 run-program --test-category "Unit Tests" --test-message "Your tests run without error" gradle test

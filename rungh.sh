@@ -23,35 +23,33 @@ then
   exit 0
 fi
 
-project=$(get-project-name)
-echo "$project submission detected"
+export PROJECT=$(get-project-name)
+echo "$PROJECT submission detected"
 
-export TEST_DIR=$TEST_BASE_DIR/$project
+export TEST_DIR=$TEST_BASE_DIR/$PROJECT
+
+[ -r $TEST_DIR/_config.sh ] && . $TEST_DIR/_config.sh
 
 if [ -e $TEST_DIR/_runtests.sh ]
 then
-    # Copy test files to submission folder
-    cp -r $TEST_DIR/_* .
-
     if [ -z "$NO_GRADLE" ]; then
-      mv $TEST_BASE_DIR/javafx_project_template $BASEDIR/javafx_project_template && rm $BASEDIR/javafx_project_template/src/* 
-      mv $TEST_BASE_DIR/gradle_project_template $BASEDIR/gradle_project_template && rm $BASEDIR/gradle_project_template/src/*
-
       # Download gradle dependency cache
       if curl https://github.com/bjucps/cps209-tests/releases/download/tests/files.tar.gz --output files.tar.gz --silent --location --fail
       then
         tar zxf files.tar.gz --directory $BASEDIR
         export GRADLE_USER_HOME=$BASEDIR/.gradle
+      else
+        echo "Unable to download Gradle dependency cache. Test run will take longer than necessary."
       fi
     fi
 
-    run-tests || report-error "Warning" "Test script completed successfully"
+    run-tests 2>&1 | tee $LOG_FILE
 else
-    echo No tests have been defined for $project submissions... >$LOG_FILE
-    if [ "$project" == "starter" ]
+    if [ "$PROJECT" == "starter" ]
     then
       exit 0
     fi
+    echo No tests have been defined for $PROJECT submissions... >$LOG_FILE
 fi
 
 # Generate report
