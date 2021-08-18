@@ -4,15 +4,17 @@ To run tests locally:
 
 ```
 cd submission-folder
-run lab1
+run lab1 [ -d ]
 ```
+
+Add the -d option to turn on shell script debugging output.
 
 To run tests interactively:
 
 ```
 cd submission-folder
 runi
-# rt lab1
+# rt lab1 [ -d ]
 ```
 
 # Configuring Assignments

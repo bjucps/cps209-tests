@@ -13,6 +13,8 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+[ "$2" = "-d" ] && export DEBUG=1
+
 export PROJECT=$1
 export TEST_DIR=$TEST_BASE_DIR/$PROJECT
 

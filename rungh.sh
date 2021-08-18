@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Enhanced debug output
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
 # This script runs in my GitHub Docker container. It sets up the
 # folder structure for a submission test and runs the test, then copies test results
 # to the student folder
@@ -29,6 +32,9 @@ echo "$PROJECT submission detected"
 export TEST_DIR=$TEST_BASE_DIR/$PROJECT
 
 [ -r $TEST_DIR/_config.sh ] && . $TEST_DIR/_config.sh
+
+# If user submitted a file named _debug, turn on DEBUG
+[ -r _debug ] && export DEBUG=1
 
 if [ -e $TEST_DIR/_$PROJECT.sh ]
 then
